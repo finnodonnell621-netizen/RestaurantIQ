@@ -1,0 +1,6 @@
+{
+  "random_forest_mae": 0.47,
+  "moving_average_mae": 2.59,
+  "improvement_pct": 81.8,
+  "test_rows": 210
+}
