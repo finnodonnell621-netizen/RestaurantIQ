@@ -10,6 +10,7 @@ day-to-day screen a restaurant manager would actually use.
 """
 
 import json
+from pathlib import Path
 
 import joblib
 import pandas as pd
@@ -18,11 +19,17 @@ import streamlit as st
 
 st.set_page_config(page_title="RestaurantIQ", page_icon="🍽️", layout="wide")
 
+# Resolve all file paths relative to this script's own location, not the
+# process's working directory - this keeps the app working the same way
+# whether it's run locally, from a different folder, or on Streamlit Cloud
+# (which runs apps from the repo root, not the folder containing app.py).
+BASE_DIR = Path(__file__).resolve().parent
+
 DATASETS = {
-    "Mixed — Realistic Demo": "data/scenario_mixed.csv",
-    "Typical Day": "data/inventory_data.csv",
-    "Low Stock Day": "data/scenario_low_stock.csv",
-    "Overstocked Day": "data/scenario_overstocked.csv",
+    "Mixed — Realistic Demo": BASE_DIR / "data/scenario_mixed.csv",
+    "Typical Day": BASE_DIR / "data/inventory_data.csv",
+    "Low Stock Day": BASE_DIR / "data/scenario_low_stock.csv",
+    "Overstocked Day": BASE_DIR / "data/scenario_overstocked.csv",
 }
 FORECAST_DAYS = 3
 SAFETY_BUFFER_PCT = 0.10
@@ -57,9 +64,9 @@ st.markdown("""
 
 @st.cache_resource
 def load_model_and_encoders():
-    model = joblib.load("src/model.pkl")
-    encoders = joblib.load("src/encoders.pkl")
-    with open("src/metrics.json") as f:
+    model = joblib.load(BASE_DIR / "src/model.pkl")
+    encoders = joblib.load(BASE_DIR / "src/encoders.pkl")
+    with open(BASE_DIR / "src/metrics.json") as f:
         metrics = json.load(f)
     return model, encoders, metrics
 
